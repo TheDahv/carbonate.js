@@ -1,4 +1,4 @@
-var fps = 15;
+var fps = 1;
 var timeInterval = 1000 / fps;
 
 // Helper functions in the bubble namespace
@@ -91,8 +91,8 @@ function BeerBubble(id, centerPoint, width) {
       centerPoint = that.centerPoint,  
       context = beer_context;
     
+    // Stop animating when it floats past the top of the page
     if (that.intervalId > 0 && that.centerPoint.y < 0) {			
-      // Stop the animation
       clearInterval(that.intervalId);
       
       // Mark this bubble for deletion
@@ -173,7 +173,7 @@ var init_bubbles = function () {
         startFloating();
       }
     }, 
-    1000 //timeInterval
+    timeInterval
   );
 };
 
