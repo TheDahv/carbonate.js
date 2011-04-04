@@ -14,7 +14,7 @@ var bubble_ns = {
   CANVAS_X_MAX: -1,
   CANVAS_Y_MAX: -1,
   bubble_id_count: 1,
-  num_bubbles_at_a_time: 3,
+  num_bubbles_at_a_time: 3
 };
 
 var beer_canvas = null;
