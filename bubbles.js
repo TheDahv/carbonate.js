@@ -178,7 +178,6 @@ var init_bubbles = function () {
 };
 
 $(function () {
-return;
   // Insert the CSS
   $('head').append('<style type="text/css">#bubble_canvas{ position: absolute; z-index: -1; }</style>')
 

@@ -12,3 +12,4 @@ ISSUES:
   CPU usage is really high
   I'm not even sure if I'm doing it correctly. I'm open to suggestions.
   I pushed the injected canvas element down by setting z-index to -1. Would it be better to lift everything else off the page (z-index: 1) instead
+  Dependency on jQuery. It would be nice to remove that
