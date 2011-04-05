@@ -186,7 +186,10 @@ $(function () {
 
   beer_canvas = document.getElementById('bubble_canvas');
   // Check for canvas support
-  if (beer_canvas.getContext) {        
+  if (beer_canvas.getContext) { commenceCarbonation(); }
+});
+
+var commenceCarbonation = function () {
     resetHeight();
     bubble_ns.CANVAS_X_MAX = beer_canvas.width;
     bubble_ns.CANVAS_Y_MAX = beer_canvas.height;    
@@ -205,5 +208,15 @@ $(function () {
     beer_context.strokeStyle = '#161001';
     beer_context.lineWidth = 1;    
     init_bubbles();
+  
+}
+
+var beerBubbleToggle = function () {
+  if(master_bubble_interval && master_bubble_interval > 0) {    
+    clearInterval(master_bubble_interval);
+    clearCanvas();
+    master_bubble_interval = 0;
+  } else {
+    commenceCarbonation();
   }
-});
+}
