@@ -161,7 +161,7 @@ var stop = function () { clearInterval(master_bubble_interval); };
       });
       
       this.beer_context = this.beer_canvas.getContext('2d');
-      this.beer_context.strokeStyle = '$161001';
+      this.beer_context.strokeStyle = '#161001';
       this.beer_context.lineWidth = 1;
       this.initBubbles();
     },
