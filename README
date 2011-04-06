@@ -9,6 +9,5 @@ USAGE:
   Simply add the script to the HTML page in the HEAD element
   
 ISSUES:
-  Code organization. I'm sure it could be better
   I pushed the injected canvas element down by setting z-index to -1. Would it be better to lift everything else off the page (z-index: 1) instead
   Dependency on jQuery. It would be nice to remove that
