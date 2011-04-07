@@ -52,7 +52,7 @@ var stop = function () { clearInterval(master_bubble_interval); };
       return {
         x: x,
         y: y
-      }
+      };
     },
     addBubble: function (bubble) {
       this.bubble_holder.push(bubble);
@@ -112,17 +112,23 @@ var stop = function () { clearInterval(master_bubble_interval); };
       var that = this;
       master_bubble_interval = setInterval(
         function () {
-          var i;
+          var i, startFloating;
+          startFloating = function (b) {
+            if (b) {
+              b.bubble_float();
+              b.drawBubble();
+            }
+          };
+
           // Make some new bubbles
           for (i = 0; i < that.num_bubbles_at_a_time; i += 1) {
-            var bubble, bubbleId, intervalId;
-            
+            var bubble, bubbleId, intervalId;            
             // Grab an id
             bubbleId = that.bubble_id_count;
             that.bubble_id_count += 1;
             
             // Create a new bubble and add it to the holder
-            var bubble = that.makeBubble(
+            bubble = that.makeBubble(
               bubbleId,
               that.makePoint(
                 that.generateXValue(),
@@ -134,12 +140,7 @@ var stop = function () { clearInterval(master_bubble_interval); };
             that.addBubble(bubble);
             that.clearCanvas();
             that.each(
-              function (b) {
-                if (b) {
-                  b.bubble_float();
-                  b.drawBubble();
-                }
-              },
+              startFloating,
               that.bubble_holder
             );
           }
@@ -173,12 +174,6 @@ var stop = function () { clearInterval(master_bubble_interval); };
       } else {
         this.commenceCarbonation();
       }
-    },
-    drawBubbles: function () {
-      this.each(
-        function (b) { if (b) { b.drawBubble(); } },
-        this.bubble_holder
-      );
     }
   };    
   
@@ -209,4 +204,4 @@ var stop = function () { clearInterval(master_bubble_interval); };
     }
     debug_framework = beer_framework;
   });
-})();
+}());
