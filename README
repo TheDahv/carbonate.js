@@ -3,7 +3,7 @@ This idea started as I was designing a site with a beer theme.
 It seemed like it would be fun to have a 'beer carbonation bubble' effect that would be easy to add to a page.
 I didn't find any existing libraries on the Internet, so I decided it would be fun to roll my own.
 
-It was also a good excuse to learn how to use the HTML5 canvas element.
+It was also a good excuse to learn how to use the HTML5 canvas element and explore JavaScript as a language.
 
 USAGE:
   Simply add the script to the HTML page in the HEAD element
