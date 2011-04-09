@@ -1,10 +1,12 @@
 var debug_framework;
-var master_bubble_interval;
+var debug_bubble_interval;
 
-var stop = function () { clearInterval(master_bubble_interval); };
+var stop = function () { clearInterval(debug_bubble_interval); };
 
-(function () {
+var carbonate = function (toggle, opts) {
   var beer_framework = {
+    debug: false,
+    bubble_interval: 0,
     bubble_holder: [],
     canvas_ref: undefined,
     canvas_bottom: 0,
@@ -22,6 +24,24 @@ var stop = function () { clearInterval(master_bubble_interval); };
     timeInterval: function () { return 1000 / this.fps; },
     beer_canvas: null,
     beer_context: null,
+    parse_options: function (opts) {
+      if (opts) {
+        // Debug option
+        if (opts['debug']) {
+          var o = opts['debug'];
+          if (typeof o === 'string') {
+            // They probably meant to give me a boolean
+            if (o.toLowerCase() === 'true') {
+              this.debug = true;
+            } else {
+              this.debug = false;
+            }
+          } else {
+            this.debug = opts['debug'];
+          }
+        }
+      }
+    },
     clearCanvas: function () {
       this.beer_context.clearRect(0, 0, this.beer_canvas.width, this.beer_canvas.height);
     },
@@ -110,7 +130,7 @@ var stop = function () { clearInterval(master_bubble_interval); };
     },
     initBubbles: function () {
       var that = this;
-      master_bubble_interval = setInterval(
+      that.bubble_interval = setInterval(
         function () {
           var i, startFloating;
           startFloating = function (b) {
@@ -147,6 +167,7 @@ var stop = function () { clearInterval(master_bubble_interval); };
         },
         this.timeInterval()
       );
+      if (that.debug) { debug_bubble_interval = that.bubble_interval; }
     },
     commenceCarbonation: function () {
       this.resetHeight();
@@ -166,42 +187,46 @@ var stop = function () { clearInterval(master_bubble_interval); };
       this.beer_context.lineWidth = 1;
       this.initBubbles();
     },
-    beerBubbleToggle: function () {
-      if (master_bubble_interval && master_bubble_interval > 0) {
-        clearInterval(master_bubble_interval);
-        this.clearCanvas();
-        master_bubble_interval = 0;
-      } else {
-        this.commenceCarbonation();
+    makeToggleFunction: function (fw) {
+      return function () {
+        var framework = fw;
+        if (framework.bubble_interval && framework.bubble_interval > 0) {
+          clearInterval(framework.bubble_interval);
+          framework.clearCanvas();
+          framework.bubble_interval = 0;
+        } else {
+          framework.commenceCarbonation();
+        }
       }
     }
   };    
   
-  $(function () {
-    // Insert the CSS
-    var style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = '#bubble_canvas{ position: absolute; z-index: -1; }';
-    document.getElementsByTagName('head')[0].appendChild(style);
+  // Insert the CSS
+  var style = document.createElement('style');
+  style.type = 'text/css';
+  style.innerHTML = '#bubble_canvas{ position: absolute; z-index: -1; }';
+  document.getElementsByTagName('head')[0].appendChild(style);
+  
+  // Insert Canvas into content area
+  var canvas = document.createElement('canvas');
+  canvas.id = 'bubble_canvas';
+  document.body.insertBefore(canvas, document.body.childNodes[0]);
+  
+  beer_framework.beer_canvas = document.getElementById('bubble_canvas');
+  
+  // Check for canvas support
+  if (beer_framework.beer_canvas.getContext) {
+    beer_framework.parse_options(opts);
+    beer_framework.commenceCarbonation();
     
-    // Insert Canvas into content area
-    var canvas = document.createElement('canvas');
-    canvas.id = 'bubble_canvas';
-    document.body.insertBefore(canvas, document.body.childNodes[0]);
-    
-    beer_framework.beer_canvas = document.getElementById('bubble_canvas');
-    
-    // Check for canvas support
-    if (beer_framework.beer_canvas.getContext) {
-      beer_framework.commenceCarbonation();
-      
-      // Figure out a better way to do this
-      if ($('#bubble_toggle_box')) {
-        $('#bubble_toggle_box').change(function () {
-          beer_framework.beerBubbleToggle(); 
-        });
-      }
+    if (toggle && typeof toggle === 'function') {
+      toggle(beer_framework.makeToggleFunction(beer_framework));
     }
+  }
+  
+  // Debug stuff
+  if (beer_framework.debug) {
     debug_framework = beer_framework;
-  });
-}());
+    debug_bubble_interval = beer_framework.bubble_interval;
+  }
+};
