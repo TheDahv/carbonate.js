@@ -6,12 +6,12 @@
     <script type="text/javascript" src="bubbles.js"></script>
     <script type="text/javascript">
       $(function () {
-        // Create a toggle function
+        // Create a trigger function
         var t = function (f) {
           $('#bubble_toggle_box').change(function (event) { f(); });
         };
         
-        // Carbonate transforms t into the toggle function
+        // Carbonate combines t with the toggle function
         carbonate(
           t,
           { 'debug': 'false'}          

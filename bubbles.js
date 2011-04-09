@@ -174,14 +174,7 @@ var carbonate = function (toggle, opts) {
       this.CANVAS_X_MAX = this.beer_canvas.width;
       this.CANVAS_Y_MAX = this.beer_canvas.height;
       var that = this;
-      $(window).resize(function () {
-        that.clearCanvas();
-        that.resetHeight();
-        that.CANVAS_X_MAX = that.beer_canvas.width;
-        that.CANVAS_Y_MAX = that.beer_canvas.height;
-        that.drawBubbles();
-      });
-      
+                    
       this.beer_context = this.beer_canvas.getContext('2d');
       this.beer_context.strokeStyle = '#161001';
       this.beer_context.lineWidth = 1;
@@ -197,6 +190,16 @@ var carbonate = function (toggle, opts) {
         } else {
           framework.commenceCarbonation();
         }
+      }
+    },
+    resize: function (fw) {
+      return function () {
+        var framework = fw;
+        framework.clearCanvas();
+        framework.resetHeight();
+        framework.CANVAS_X_MAX = framework.beer_canvas.width;
+        framework.CANVAS_Y_MAX = framework.beer_canvas.height;
+        framework.drawBubbles();
       }
     }
   };    
@@ -218,7 +221,15 @@ var carbonate = function (toggle, opts) {
   if (beer_framework.beer_canvas.getContext) {
     beer_framework.parse_options(opts);
     beer_framework.commenceCarbonation();
+  
+    // Set up the resize handler
+    if (window.addEventListener) {
+      window.addEventListener("resize", beer_framework.resize(beer_framework));
+    } else if (window.attachEvent) {
+      window.attachEvent("onresize", beer_framework.resize(beer_framework))
+    }
     
+    // Combine the toggle function with the user's trigger function
     if (toggle && typeof toggle === 'function') {
       toggle(beer_framework.makeToggleFunction(beer_framework));
     }
