@@ -7,7 +7,9 @@ It was also a good excuse to learn how to use the HTML5 canvas element.
 
 USAGE:
   Simply add the script to the HTML page in the HEAD element
+  Call carbonate() to run. 
+  Carbonate takes two parameters--a toggle function (to turn bubbles on and off) and an options object
+  View the HTML demo to learn how to set up a toggle function
   
 ISSUES:
   I pushed the injected canvas element down by setting z-index to -1. Would it be better to lift everything else off the page (z-index: 1) instead
-  Dependency on jQuery. It would be nice to remove that
