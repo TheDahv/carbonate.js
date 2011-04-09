@@ -1,7 +1,7 @@
 var debug_framework;
-var debug_bubble_interval;
+var debug_interval;
 
-var stop = function () { clearInterval(debug_bubble_interval); };
+var stop = function () { clearInterval(debug_interval); };
 
 var carbonate = function (toggle, opts) {
   var beer_framework = {
@@ -24,7 +24,7 @@ var carbonate = function (toggle, opts) {
     timeInterval: function () { return 1000 / this.fps; },
     beer_canvas: null,
     beer_context: null,
-    parse_options: function (opts) {
+    parseOptions: function (opts) {
       if (opts) {
         // Debug option
         if (opts['debug']) {
@@ -167,13 +167,13 @@ var carbonate = function (toggle, opts) {
         },
         this.timeInterval()
       );
-      if (that.debug) { debug_bubble_interval = that.bubble_interval; }
+      if (that.debug) { debug_interval = that.bubble_interval; }
     },
     commenceCarbonation: function () {
+      var that = this;
       this.resetHeight();
       this.CANVAS_X_MAX = this.beer_canvas.width;
       this.CANVAS_Y_MAX = this.beer_canvas.height;
-      var that = this;
                     
       this.beer_context = this.beer_canvas.getContext('2d');
       this.beer_context.strokeStyle = '#161001';
@@ -219,7 +219,7 @@ var carbonate = function (toggle, opts) {
   
   // Check for canvas support
   if (beer_framework.beer_canvas.getContext) {
-    beer_framework.parse_options(opts);
+    beer_framework.parseOptions(opts);
     beer_framework.commenceCarbonation();
   
     // Set up the resize handler
@@ -238,6 +238,6 @@ var carbonate = function (toggle, opts) {
   // Debug stuff
   if (beer_framework.debug) {
     debug_framework = beer_framework;
-    debug_bubble_interval = beer_framework.bubble_interval;
+    debug_interval = beer_framework.bubble_interval;
   }
 };
