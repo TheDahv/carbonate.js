@@ -14,7 +14,15 @@
         // Carbonate combines t with the toggle function
         carbonate(
           t,
-          { 'debug': 'false'}          
+          { 
+            'debug': false,
+            'BUBBLE_WIDTH_MIN': 2,
+            'BUBBLE_WIDTH_MAX': 18,
+            'BUBBLE_DISTANCE_MIN': 2,
+            'BUBBLE_DISTANCE_MAX': 10,
+            'num_bubbles_at_a_time': 2,
+            'fps': 25
+          }          
         );
       });
     </script>

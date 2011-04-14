@@ -34,7 +34,35 @@
               this.debug = opts['debug'];
             }
           }
+          // Bubble Width
+          if (opts['BUBBLE_WIDTH_MIN'] && typeof opts['BUBBLE_WIDTH_MIN'] === 'number') {
+            this.BUBBLE_WIDTH_MIN = opts['BUBBLE_WIDTH_MIN'];
+          }
+          if (opts['BUBBLE_WIDTH_MAX'] && typeof opts['BUBBLE_WIDTH_MAX'] === 'number') {
+            this.BUBBLE_WIDTH_MAX = opts['BUBBLE_WIDTH_MAX'];
+          }
+          
+          // Bubble Distance
+          if (opts['BUBBLE_DISTANCE_MIN'] && typeof opts['BUBBLE_DISTANCE_MIN'] === 'number') {
+            this.BUBBLE_DISTANCE_MIN = opts['BUBBLE_DISTANCE_MIN'];            
+          }
+          
+          if (opts['BUBBLE_DISTANCE_MAX'] && typeof opts['BUBBLE_DISTANCE_MAX'] === 'number') {
+            this.BUBBLE_DISTANCE_MAX = opts['BUBBLE_DISTANCE_MAX'];
+          }
+          
+          // Number of bubbles to make at once
+          if (opts['num_bubbles_at_a_time'] && typeof opts['num_bubbles_at_a_time'] === 'number') {
+            this.num_bubbles_at_a_time = opts['num_bubbles_at_a_time'];
+          }
+          
+          // Frames Per Second
+          if (opts['fps'] && typeof opts['fps'] === 'number') {
+            this.fps = opts['fps'];
+          }
+          
         }
+        
       },
       clearCanvas: function () {
         this.beer_context.clearRect(0, 0, this.beer_canvas.width, this.beer_canvas.height);
