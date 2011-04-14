@@ -5,9 +5,33 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
     <script type="text/javascript" src="carbonate.js"></script>
     <script type="text/javascript">
+      var syncCookiePrefs = function () {
+        var ca, i, x, y;
+        ca = document.cookie.split(';');
+        for(i = 0; i < ca.length; i++) {
+          x = ca[i].substr(0, ca[i].indexOf('='));
+          y = ca[i].substr(ca[i].indexOf('=') + 1);
+          x = x.replace(/^\s+|\s+$/g, '');
+          if (x === 'carbonate') {
+            if(unescape(y) === 'true') {
+              $('#bubble_toggle_box').attr('checked', 'checked');
+            } else {
+              $('#bubble_toggle_box').removeAttr('checked');
+            }
+            return;
+          }
+        }          
+      };
+      
       $(function () {
+        var t;
+        
+        if(document.cookie && document.cookie.indexOf('carbonate') !== -1){
+          syncCookiePrefs();  
+        }
+        
         // Create a trigger function
-        var t = function (f) {
+        t = function (f) {
           $('#bubble_toggle_box').change(function (event) { f(); });
         };
         
