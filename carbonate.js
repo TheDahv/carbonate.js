@@ -198,15 +198,11 @@
       }
     };    
     
-    // Insert the CSS
-    var style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = '#bubble_canvas{ position: absolute; z-index: -1; }';
-    document.getElementsByTagName('head')[0].appendChild(style);
-    
     // Insert Canvas into content area
     var canvas = document.createElement('canvas');
     canvas.id = 'bubble_canvas';
+    canvas.style.position = 'absolute';
+    canvas.style.zIndex = (-1);
     document.body.insertBefore(canvas, document.body.childNodes[0]);
     
     beer_framework.beer_canvas = document.getElementById('bubble_canvas');
