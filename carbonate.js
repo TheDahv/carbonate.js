@@ -1,7 +1,10 @@
 (function() { 
   window.carbonate = function (toggle, opts) {
+    var canvas;
+    var cookie_preference;
     var beer_framework = {
       debug: false,
+      persist: true,
       bubble_interval: 0,
       bubble_holder: [],
       canvas_ref: undefined,
@@ -25,13 +28,9 @@
             var o = opts['debug'];
             if (typeof o === 'string') {
               // They probably meant to give me a boolean
-              if (o.toLowerCase() === 'true') {
-                this.debug = true;
-              } else {
-                this.debug = false;
-              }
+              this.debug = o.toLowerCase() === 'true' ? true : false;
             } else {
-              this.debug = opts['debug'];
+              this.debug = o;
             }
           }
           // Bubble Width
@@ -61,11 +60,40 @@
             this.fps = opts['fps'];
           }
           
-        }
-        
+          // Use cookies
+          if (opts['persist']) {
+            var o = opts['persist'];
+            if (typeof o === 'string') {
+              this.persist = o.toLowerCase() === 'true' ? true : false; 
+            } else {
+              this.persist = o;
+            }            
+          }
+        }        
       },
       clearCanvas: function () {
         this.beer_context.clearRect(0, 0, this.beer_canvas.width, this.beer_canvas.height);
+      },
+      getCookie: function(cookie_name) {
+        var i, x, y, cookie_array = document.cookie.split(';');
+        for (i = 0; i < cookie_array.length; i++) {
+          x = cookie_array[i].substr(0, cookie_array[i].indexOf('='));
+          y = cookie_array[i].substr(cookie_array[i].indexOf('=')+1);
+          x = x.replace(/^\s+|\s+$/g,'');
+          if (x === cookie_name) {
+            return unescape(y);
+          }
+        }
+      },
+      setCookie: function(cookie_name, value) {
+        var date, expires, final_value;
+        date = new Date();
+        date.setTime(date.getTime() + (7 * 25 * 60 * 60 * 1000)); // 7 days
+        expires = "; expires=" + date.toGMTString();
+        
+        final_value = cookie_name + "=" + value + expires;
+                
+        document.cookie = final_value;    
       },
       head: function (arr) { return arr[0]; },
       each: function (f, arr) {
@@ -209,8 +237,12 @@
             clearInterval(framework.bubble_interval);
             framework.clearCanvas();
             framework.bubble_interval = 0;
+            if (framework.persist) {
+              framework.setCookie('carbonate', false);
+            }
           } else {
             framework.commenceCarbonation();
+            framework.setCookie('carbonate', true);
           }
         }
       },
@@ -227,7 +259,7 @@
     };    
     
     // Insert Canvas into content area
-    var canvas = document.createElement('canvas');
+    canvas = document.createElement('canvas');
     canvas.id = 'bubble_canvas';
     canvas.style.position = 'absolute';
     canvas.style.zIndex = (-1);
@@ -236,21 +268,40 @@
     beer_framework.beer_canvas = document.getElementById('bubble_canvas');
     
     // Check for canvas support
-    if (beer_framework.beer_canvas.getContext) {
+    if (beer_framework.beer_canvas.getContext) {      
       beer_framework.parseOptions(opts);
-      beer_framework.commenceCarbonation();
-    
+
       // Set up the resize handler
       if (window.addEventListener) {
-        window.addEventListener("resize", beer_framework.resize(beer_framework));
+        window.addEventListener("resize", beer_framework.resize(beer_framework), false);
       } else if (window.attachEvent) {
         window.attachEvent("onresize", beer_framework.resize(beer_framework))
       }
-      
+
       // Combine the toggle function with the user's trigger function
       if (toggle && typeof toggle === 'function') {
         toggle(beer_framework.makeToggleFunction(beer_framework));
       }
+      
+      // If we are using cookies, figure out if we want to start carbonated
+      if (beer_framework.persist) {        
+        cookie_preference = beer_framework.getCookie('carbonate');
+        if (cookie_preference === undefined) {
+          // No preference, huh? We'll start with bubbles
+          beer_framework.setCookie('carbonate', true);
+          beer_framework.commenceCarbonation();        
+        } else {
+          // Do we want carbonation on or off?
+          if (cookie_preference && cookie_preference.toLowerCase() === "true") {
+            beer_framework.commenceCarbonation();
+          } else {
+            // No bubbles!? Ok, return and do nothing
+            return;
+          }          
+        }        
+      } else {
+        beer_framework.commenceCarbonation();        
+      } 
     }
     
     // Debug stuff
