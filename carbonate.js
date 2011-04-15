@@ -4,8 +4,30 @@ const BUBBLE_DISTANCE_MIN = 2;
 const BUBBLE_DISTANCE_MAX = 10;
 
 var Carbonate = function(opts) {
+  
+  function mergeOptions(opt1, opt2) {
+    var opt3 = {};
+    for (attrname in opt1) {
+      opt3[attrname] = opt1[attrname];
+    }
 
-  var options = opts || { debug: false, fps: 25, num_bubbles_at_a_time: 2 };
+    for (attrname in opt2) {
+      opt3[attrname] = opt2[attrname];
+    }
+
+    return opt3;
+  }
+
+  //var options = opts || { debug: false, fps: 25, num_bubbles_at_a_time: 2 };
+  var options = mergeOptions({ 
+    debug: false, 
+    fps: 25, 
+    num_bubbles_at_a_time: 2, 
+    min_bubble_distance: BUBBLE_DISTANCE_MIN, 
+    max_bubble_distance: BUBBLE_DISTANCE_MAX,
+    min_bubble_width: BUBBLE_WIDTH_MIN,
+    max_bubble_width: BUBBLE_WIDTH_MAX
+  }, opts);
 
   function createCanvas() {
 
@@ -17,6 +39,7 @@ var Carbonate = function(opts) {
     document.body.insertBefore(canvas, document.body.childNodes[0]);
     return canvas;
   }
+
 
   function each(f, arr) {
     if (arr.length > 0) {
@@ -45,10 +68,6 @@ var Carbonate = function(opts) {
     return (number < minValue ? minValue : number); 
   }
 
-  function generateWidth() {
-    return numberGenerator(BUBBLE_WIDTH_MIN, BUBBLE_WIDTH_MAX);
-  }
-
   function generateXValue(width) {
     return numberGenerator(0, width);
   }
@@ -61,9 +80,6 @@ var Carbonate = function(opts) {
     return { x: x, y: y };
   }
 
-  function generateDistance() {
-    return numberGenerator(BUBBLE_DISTANCE_MIN, BUBBLE_DISTANCE_MAX);
-  }
 
   var carbonate = {
     options: options,
@@ -73,6 +89,7 @@ var Carbonate = function(opts) {
     canvas_bottom: 0,
     bubble_id_count: 1,
     fps: options.fps,
+    debug: options.debug,
     num_bubbles_at_a_time: options.num_bubbles_at_a_time,
     timeInterval: function() {
       return 1000 / this.fps;
@@ -117,7 +134,7 @@ var Carbonate = function(opts) {
         bubbleId: id,
         centerPoint: centerPoint,
         width: width,
-        distance: function () { return generateDistance(); },
+        distance: function () { return numberGenerator(that.options.min_bubble_distance, that.options.max_bubble_distance); },
         getBubbleId: function () { return this.bubbleId; },
         drawBubble: function () {
           var width = this.width,
@@ -178,7 +195,7 @@ var Carbonate = function(opts) {
                 generateXValue(that.canvas_width),
                 generateYValue(that.canvas_height)
               ),
-              generateWidth()
+              numberGenerator(that.options.min_bubble_width, that.options.max_bubble_width)
             );
               
             that.addBubble(bubble);
@@ -195,7 +212,6 @@ var Carbonate = function(opts) {
     }
   };
 
-//  carbonate.the_canvas = createCanvas();
   if (carbonate.the_canvas.getContext) {
     if (window.addEventListener) {
       window.addEventListener("resize", resize(carbonate), false);
@@ -206,13 +222,3 @@ var Carbonate = function(opts) {
 
   return carbonate;
 }
-
-
-/*    
-    
-    // Debug stuff
-    if (beer_framework.debug) {
-      window.debug_framework = beer_framework;
-      window.debug_interval = beer_framework.bubble_interval;
-      window.debug_stop = function () { clearInterval(debug_interval); };      
-    }*/
