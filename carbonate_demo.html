@@ -4,57 +4,15 @@
     <title>test</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
     <script type="text/javascript" src="carbonate.js"></script>
-    <script type="text/javascript">
-      var syncCookiePrefs = function () {
-        var ca, i, x, y;
-        ca = document.cookie.split(';');
-        for(i = 0; i < ca.length; i++) {
-          x = ca[i].substr(0, ca[i].indexOf('='));
-          y = ca[i].substr(ca[i].indexOf('=') + 1);
-          x = x.replace(/^\s+|\s+$/g, '');
-          if (x === 'carbonate') {
-            if(unescape(y) === 'true') {
-              $('#bubble_toggle_box').attr('checked', 'checked');
-            } else {
-              $('#bubble_toggle_box').removeAttr('checked');
-            }
-            return;
-          }
-        }          
-      };
-      
-      $(function () {
-        var t;
-        
-        if(document.cookie && document.cookie.indexOf('carbonate') !== -1){
-          syncCookiePrefs();  
-        }
-        
-        // Create a trigger function
-        t = function (f) {
-          $('#bubble_toggle_box').change(function (event) { f(); });
-        };
-        
-        // Carbonate combines t with the toggle function
-        carbonate(
-          t,
-          { 
-            'debug': false,
-            'BUBBLE_WIDTH_MIN': 2,
-            'BUBBLE_WIDTH_MAX': 18,
-            'BUBBLE_DISTANCE_MIN': 2,
-            'BUBBLE_DISTANCE_MAX': 10,
-            'num_bubbles_at_a_time': 2,
-            'fps': 25
-          }          
-        );
-      });
-    </script>
   </head>
   <body style="height: 100%;">
     <div style="width: 80%; height: 100%; margin: auto; text-align: center;">
       <h1>makin' dem bubbles float</h1>
       <input type="checkbox" id="bubble_toggle_box" /> Bubble toggle
     </div>
+    <script type="text/javascript">
+      var c = new Carbonate();
+      c.start();
+    </script>
   </body>
 </html>
