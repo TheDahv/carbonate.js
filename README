@@ -1,3 +1,5 @@
+The 'persistable' branch is an exploration in setting a persistable experience across pages using cookies. This way the bubbles can be toggled on or off and the setting will be preserved across pages
+
 This idea started as I was designing a site with a beer theme.
 
 It seemed like it would be fun to have a 'beer carbonation bubble' effect that would be easy to add to a page.
