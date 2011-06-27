@@ -27,11 +27,11 @@
 (function() { 
   window.carbonate = function (toggle, opts) {
     var canvas;
-    var cookie_preference;
+    var cookie_preference;    
     var beer_framework = {
       debug: false,
       persist: true,
-      bubble_interval: 0,
+      do_animate: false,
       bubble_holder: [],
       canvas_ref: undefined,
       canvas_bottom: 0,
@@ -204,46 +204,62 @@
         canvas.setAttribute('height', document.body.offsetHeight);
         this.canvas_bottom = canvas.height;
       },
-      initBubbles: function () {
-        var that = this;
-        that.bubble_interval = setInterval(
-          function () {
-            var i, startFloating;
-            startFloating = function (b) {
-              if (b) {
-                b.bubble_float();
-                b.drawBubble();
-              }
-            };
+      animate: function (fw) {
+        var i, startFloating, startTime, endTime, that = fw;
+        console.log(that);
+        if(that.do_animate === false) {
+            return;   
+        }
+        
+        console.log('animating');
+        startTime = new Date();
+        
+        startFloating = function (b) {
+          if (b) {
+            b.bubble_float();
+            b.drawBubble();
+          }
+        };            
 
-            // Make some new bubbles
-            for (i = 0; i < that.num_bubbles_at_a_time; i += 1) {
-              var bubble, bubbleId, intervalId;            
-              // Grab an id
-              bubbleId = that.bubble_id_count;
-              that.bubble_id_count += 1;
-              
-              // Create a new bubble and add it to the holder
-              bubble = that.makeBubble(
-                bubbleId,
-                that.makePoint(
-                  that.generateXValue(),
-                  that.generateYValue()
-                ),
-                that.generateWidth()
-              );
-              
-              that.addBubble(bubble);
-              that.clearCanvas();
-              that.each(
-                startFloating,
-                that.bubble_holder
-              );
-            }
-          },
+        // Make some new bubbles
+        for (i = 0; i < that.num_bubbles_at_a_time; i += 1) {
+          var bubble, bubbleId, intervalId;            
+          // Grab an id
+          bubbleId = that.bubble_id_count;
+          that.bubble_id_count += 1;
+          
+          // Create a new bubble and add it to the holder
+          bubble = that.makeBubble(
+            bubbleId,
+            that.makePoint(
+              that.generateXValue(),
+              that.generateYValue()
+            ),
+            that.generateWidth()
+          );
+          
+          that.addBubble(bubble);
+          that.clearCanvas();
+          that.each(
+            startFloating,
+            that.bubble_holder
+          );
+        }
+        
+        // Set the next animation frame
+        endTime = new Date();
+        setTimeout(
+            function () { that.animate(that); },
+            (endTime - startTime)
+        );
+      },
+      initBubbles: function () {        
+        var that = this;
+        this.do_animate = true;
+        setTimeout(
+          function () { that.animate(that); },
           this.timeInterval()
         );
-        if (that.debug) { debug_interval = that.bubble_interval; }
       },
       commenceCarbonation: function () {
         var that = this;
@@ -259,17 +275,16 @@
       makeToggleFunction: function (fw) {
         return function () {
           var framework = fw;
-          if (framework.bubble_interval && framework.bubble_interval > 0) {
-            clearInterval(framework.bubble_interval);
+          if(framework.do_animate) {
+            // Bubbles are on. Turn them off
+            framework.do_animate = false;
             framework.clearCanvas();
-            framework.bubble_interval = 0;
-            if (framework.persist) {
-              framework.setCookie('carbonate', false);
-            }
+            framework.persist && framework.setCookie('carbonate', false);
           } else {
+            // Bubbles are off. Turn them on
             framework.commenceCarbonation();
-            framework.setCookie('carbonate', true);
-          }
+            framework.persist && framework.setCookie('carbonate', true);            
+          }  
         }
       },
       resize: function (fw) {
@@ -333,8 +348,7 @@
     // Debug stuff
     if (beer_framework.debug) {
       window.debug_framework = beer_framework;
-      window.debug_interval = beer_framework.bubble_interval;
-      window.debug_stop = function () { clearInterval(debug_interval); };      
+      window.debug_stop = function () { debug_framework.do_animate = false; };      
     }
   };
 }());

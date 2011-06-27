@@ -25,10 +25,11 @@
       
       $(function () {
         var t;
-        
+        /*
         if(document.cookie && document.cookie.indexOf('carbonate') !== -1){
           syncCookiePrefs();  
         }
+        */
         
         // Create a trigger function
         t = function (f) {
@@ -39,7 +40,8 @@
         carbonate(
           t,
           { 
-            'debug': false,
+            'debug': true,
+            'persist': false,
             'BUBBLE_WIDTH_MIN': 2,
             'BUBBLE_WIDTH_MAX': 18,
             'BUBBLE_DISTANCE_MIN': 2,
@@ -54,7 +56,7 @@
   <body style="height: 100%;">
     <div style="width: 80%; height: 100%; margin: auto; text-align: center;">
       <h1>makin' dem bubbles float</h1>
-      <input type="checkbox" id="bubble_toggle_box" /> Bubble toggle
+      <input type="checkbox" id="bubble_toggle_box" checked="checked" /> Bubble toggle
     </div>
   </body>
 </html>
